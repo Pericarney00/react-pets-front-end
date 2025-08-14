@@ -19,6 +19,23 @@ function App() {
     setIsFormOpen(!isFormOpen)
   };
 
+  const handleAddPet = async (formData) => {
+    try {
+      const newPet = await petService.create(formData);
+      // Add the pet object and the current pets to a new array, and
+      // set that array as the new pets
+      if (newPet.error) {
+        throw new Error(newPet.error);
+      }
+
+      setPets([newPet, ...pets]);
+      setIsFormOpen(false)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+
   useEffect( () => {
     const fetchPets = async () => {
       try {
@@ -44,7 +61,7 @@ function App() {
         handleFormView={handleFormView}
         isFormOpen={isFormOpen}
       />
-      {isFormOpen ? (<PetForm />) : (<PetDetail selected={selected} />)}
+      {isFormOpen ? (<PetForm handleAddPet={handleAddPet} />) : (<PetDetail selected={selected} />)}
       
       
     </>
